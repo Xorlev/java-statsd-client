@@ -103,7 +103,19 @@ public final class StatsDClient {
      *     the name of the counter to increment
      */
     public void incrementCounter(String aspect) {
-        send(String.format("%s.%s:%d|c", prefix, aspect, 1));
+        incrementCounter(aspect, 1);
+    }
+
+    /**
+     * Increments the specified counter by n.
+     *
+     * <p>This method is non-blocking and is guaranteed not to throw an exception.</p>
+     *
+     * @param aspect
+     *     the name of the counter to increment
+     */
+    public void incrementCounter(String aspect, int n) {
+        send(String.format("%s.%s:%d|c", prefix, aspect, n));
     }
 
     /**
