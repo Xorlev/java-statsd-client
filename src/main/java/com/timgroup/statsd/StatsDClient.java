@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * @author Tom Denley
  *
  */
-public final class StatsDClient {
+public final class StatsDClient implements StatsClient {
 
     private final String prefix;
     private final DatagramSocket clientSocket;
@@ -102,6 +102,7 @@ public final class StatsDClient {
      * @param aspect
      *     the name of the counter to increment
      */
+    @Override
     public void incrementCounter(String aspect) {
         incrementCounter(aspect, 1);
     }
@@ -114,6 +115,7 @@ public final class StatsDClient {
      * @param aspect
      *     the name of the counter to increment
      */
+    @Override
     public void incrementCounter(String aspect, int n) {
         send(String.format("%s.%s:%d|c", prefix, aspect, n));
     }
@@ -128,6 +130,7 @@ public final class StatsDClient {
      * @param value
      *     the new reading of the gauge
      */
+    @Override
     public void recordGaugeValue(String aspect, int value) {
         send(String.format("%s.%s:%d|g", prefix, aspect, value));
     }
@@ -142,7 +145,8 @@ public final class StatsDClient {
      * @param timeInMs
      *     the time in milliseconds
      */
-    public void recordExecutionTime(String aspect, int timeInMs) {
+    @Override
+    public void recordExecutionTime(String aspect, long timeInMs) {
         send(String.format("%s.%s:%d|ms", prefix, aspect, timeInMs));
     }
 
