@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -119,6 +120,28 @@ public final class StatsDClient implements StatsClient {
     public void incrementCounter(String aspect, int n) {
         send(String.format("%s.%s:%d|c", prefix, aspect, n));
     }
+
+
+    /**
+     * Increments the specified counter by n, but limits data flow to the specified rate.
+     *
+     * <p>This method is non-blocking and is guaranteed not to throw an exception.</p>
+     *
+     * @param aspect
+     *      the name of the counter to increment
+     * @param n
+     *      the integer amount by which to increment the counter
+     * @param rate
+     *      a value between 0.0 and 1.0 which indicates the sampling rate in terms of
+     *      a percentage of the total times this method is called. E.g. a rate of 0.1
+     *      will send data to StatsD 1/10th of the time.
+     */
+    public void incrementCounterSampled(String aspect, int n, double rate) {
+        if (rnd.nextDouble() < rate) {
+            send(String.format("%s.%s:%d|c|@%.2f", prefix, aspect, n, rate));
+        }
+    }
+    private Random rnd = new Random();
 
     /**
      * Records the latest fixed value for the specified named gauge.
