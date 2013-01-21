@@ -6,11 +6,13 @@ package com.timgroup.statsd;
  * @author Michael Rose <michael@fullcontact.com>
  */
 public interface StatsClient {
-    void incrementCounter(String aspect);
+    public void incrementCounter(String aspect);
 
-    void incrementCounter(String aspect, int n);
+    public void incrementCounter(String aspect, int n);
 
-    void recordGaugeValue(String aspect, int value);
+    public void incrementCounterSampled(String aspect, int n, double rate) {
 
-    void recordExecutionTime(String aspect, long timeInMs);
+    public void recordGaugeValue(String aspect, int value);
+
+    public void recordExecutionTime(String aspect, long timeInMs);
 }
